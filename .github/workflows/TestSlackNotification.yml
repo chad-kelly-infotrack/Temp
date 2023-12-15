@@ -1,0 +1,27 @@
+name: Slack Notification
+
+on:
+  create:
+    branches:
+      - '*'
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Send Slack Notification
+        env:
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+        run: |
+          branch_name=$(git rev-parse --symbolic --abbrev-ref ${{ github.ref }})
+          payload="{
+            \"channel\": \"#test1\",
+            \"text\": \"New branch created: $branch_name\",
+            \"username\": \"GitHub Actions\",
+            \"icon_emoji\": \":rocket:\"
+          }"
+          curl -X POST -H "Content-type: application/json" --data "$payload" https://slack.com/api/chat.postMessage?token=$SLACK_TOKEN
