@@ -3,7 +3,7 @@ name: Slack Notification
 on:
   push:
     tags:
-      - '*'
+      - 'website-us-*'
       
 jobs:
   notify:
