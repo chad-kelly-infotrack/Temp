@@ -3,7 +3,7 @@ name: Slack Notification
 on:
   create:
     tags: 
-      - 'website-us-**'
+      - 'refs/tags/website-us-*'
     branches:
       - 'releaseus/**'
 
