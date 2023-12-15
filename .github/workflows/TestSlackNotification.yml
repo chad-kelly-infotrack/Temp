@@ -1,9 +1,9 @@
 name: Slack Notification
 
 on:
-  create:
+  push:
     tags: 
-      - '*'
+      - '*us*'
       
 jobs:
   notify:
