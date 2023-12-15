@@ -2,8 +2,10 @@ name: Slack Notification
 
 on:
   create:
+    tags: 
+      - 'website-us-*'
     branches:
-      - '*'
+      - 'releaseus/**'
 
 jobs:
   notify:
@@ -13,14 +15,21 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: Get Latest Tag
+        id: tag
+        run: |
+          latest_tag=$(git tag -l "website-us-*" --sort=-v:refname | head -n 1)
+          echo "::set-output name=tag::$latest_tag"
+
       - name: Send Slack Notification
         env:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
         run: |
+          latest_tag_link = "https://github.com/${{ github.repository }}/releases/tag/${{ steps.tag.outputs.tag }}"
           branch_name=$(git rev-parse --symbolic --abbrev-ref ${{ github.ref }})
           payload="{
             \"channel\": \"#test1\",
-            \"text\": \"New branch created: $branch_name\",
+            \"text\": \"New tag created: [${{ steps.tag.outputs.tag }}](${latest_tag_link})\",
             \"username\": \"GitHub Actions\",
             \"icon_emoji\": \":rocket:\"
           }"
