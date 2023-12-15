@@ -24,4 +24,4 @@ jobs:
             \"username\": \"GitHub Actions\",
             \"icon_emoji\": \":rocket:\"
           }"
-          curl -X POST -H "Content-type: application/json" --data "$payload" https://slack.com/api/chat.postMessage?token=$SLACK_TOKEN
+          curl -X POST -H "Content-type: application/json" -H "Authorization: Bearer $SLACK_TOKEN" --data "$payload" https://slack.com/api/chat.postMessage
