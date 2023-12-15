@@ -3,10 +3,8 @@ name: Slack Notification
 on:
   create:
     tags: 
-      - 'refs/tags/website-us-*'
-    branches:
-      - 'releaseus/**'
-
+      - '*'
+      
 jobs:
   notify:
     runs-on: ubuntu-latest
