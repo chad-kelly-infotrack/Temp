@@ -2,7 +2,7 @@ name: Slack Notification
 
 on:
   push:
-    tags: 
+    tags:
       - '*'
       
 jobs:
@@ -17,13 +17,18 @@ jobs:
         id: tag
         run: |
           latest_tag=$(git tag -l "website-us-*" --sort=-v:refname | head -n 1)
-          echo "::set-output name=tag::$latest_tag"
+          if [ -n "$latest_tag" ]; then
+            echo "::set-output name=tag::$latest_tag"
+          else
+            echo "No matching tags found."
+            exit 1
+          fi
 
       - name: Send Slack Notification
         env:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
         run: |
-          latest_tag_link = "https://github.com/${{ github.repository }}/releases/tag/${{ steps.tag.outputs.tag }}"
+          latest_tag_link="https://github.com/${{ github.repository }}/releases/tag/${{ steps.tag.outputs.tag }}"
           branch_name=$(git rev-parse --symbolic --abbrev-ref ${{ github.ref }})
           payload="{
             \"channel\": \"#test1\",
@@ -31,4 +36,4 @@ jobs:
             \"username\": \"GitHub Actions\",
             \"icon_emoji\": \":rocket:\"
           }"
-          curl -X POST -H "Content-type: application/json" -H "Authorization: Bearer $SLACK_TOKEN" --data "$payload" https://slack.com/api/chat.postMessage
+          curl -X POST -H "Content-type: application/json" -H "Authorization: Bearer $SLACK_TOKEN" --data "$payload"
